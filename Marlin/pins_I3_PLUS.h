@@ -37,7 +37,15 @@
 //
 // Limit Switches
 //
-#ifdef ADVi3PP_BLTOUCH
+#if defined(ADVi3PP_BLTOUCH_ZMIN)
+#define X_MIN_PIN          54   // PF0 / A0
+#define X_MAX_PIN          -1   // NC
+#define Y_MIN_PIN          24   // PA2 / AD2
+#define Y_MAX_PIN          -1   // NC
+#define Z_MIN_PIN          25   // PA1 / AD3
+#define Z_MAX_PIN          -1   // NC
+#define SERVO0_PIN         40   // PG1 / !RD
+#elif defined(ADVi3PP_BLTOUCH_ZMAX)
 // Use pin 25 for BLTouch probe. Assign it to Z_MAX_PIN
 #define X_MIN_PIN          54   // PF0 / A0
 #define X_MAX_PIN          -1   // NC

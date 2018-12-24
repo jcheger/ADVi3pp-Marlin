@@ -44,6 +44,11 @@
 // This is only to ensure that CLion is parsing code properly inside the IDE
 #ifdef __CLION_IDE__
 #define DEBUG
+#define ADVi3PP_BLTOUCH_ZMAX
+#define ADVi3PP_BLTOUCH_ZMIN
+#endif
+
+#if defined(ADVi3PP_BLTOUCH_ZMAX) || defined(ADVi3PP_BLTOUCH_ZMIN)
 #define ADVi3PP_BLTOUCH
 #endif
 
@@ -488,7 +493,7 @@
 #define USE_ZMIN_PLUG
 //#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
-#ifdef ADVi3PP_BLTOUCH
+#ifdef ADVi3PP_BLTOUCH_ZMAX
 // Used by BLTouch probe
 #define USE_ZMAX_PLUG
 #endif
@@ -507,7 +512,15 @@
   //#define ENDSTOPPULLUP_ZMIN_PROBE
 #endif
 
-#ifdef ADVi3PP_BLTOUCH
+#if defined(ADVi3PP_BLTOUCH_ZMIN)
+#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the probe.
+#elif defined(ADVi3PP_BLTOUCH_ZMAX)
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
@@ -626,7 +639,9 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#ifdef ADVi3PP_BLTOUCH_ZMIN
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#endif
 
 /**
  * Z_MIN_PROBE_ENDSTOP
@@ -647,7 +662,7 @@
  * disastrous consequences. Use with caution and do your homework.
  *
  */
-#ifdef ADVi3PP_BLTOUCH
+#ifdef ADVi3PP_BLTOUCH_ZMAX
 // BLTouch probe uses Z-Max endstop
 #define Z_MIN_PROBE_ENDSTOP
 #endif
@@ -739,15 +754,16 @@
 #define XY_PROBE_SPEED 8000
 
 // Speed for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
+#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z  // Marlin's example: 4 * 60 = 240
 
 // Speed for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 8)
+//#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 8)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2) // Marlin's example: Marlin's example: HOMING_FEEDRATE/2
 
 // The number of probes to perform at each point.
 //   Set to 2 for a fast/slow probe, using the second probe result.
 //   Set to 3 or more for slow probes, averaging the results.
-#define MULTIPLE_PROBING 2
+//#define MULTIPLE_PROBING 2
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -763,8 +779,13 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
+#ifdef ADVi3PP_BLTOUCH
+#define Z_CLEARANCE_DEPLOY_PROBE   15 // BLTOUCH says min 15
+#define Z_CLEARANCE_BETWEEN_PROBES 10 // BLTOUCH says min 10
+# else
 #define Z_CLEARANCE_DEPLOY_PROBE   15 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES 5 // Z Clearance between probe points
+#endif
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
