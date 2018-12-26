@@ -712,7 +712,12 @@
  * These options are most useful for the BLTouch probe, but may also improve
  * readings with inductive probes and piezo sensors.
  */
-#define PROBING_HEATERS_OFF       // Turn heaters off when probing
+/* JC note
+ * original firmware takes a very long time to probe - PROBING_HEATERS_OFF is a killer (temp < alert)
+ * this firmware is configured to probe way faster, but even though, temperature of the extruder is
+ * dropping of 50°C during the process
+ */
+//#define PROBING_HEATERS_OFF       // Turn heaters off when probing
 #define PROBING_FANS_OFF          // Turn fans off when probing
 //#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
 
